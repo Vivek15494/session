@@ -7,7 +7,7 @@ app.secret_key = 'any random string'
 
 @app.route("/")
 def index():
-	if("username" in session.keys()):
+	if("user_id" in session.keys()):
         	return render_template('welcome.html', login= "True")
 	else:
 		return render_template('welcome.html', login= "False")
@@ -19,9 +19,10 @@ def login():
 	if(existing_user is None):
 		return render_template('error.html', message="You have to sign up first")
 	
-	elif(request.form["password"] == "what" and request.form["username"] == "shashank"):
+	elif(request.form["password"] == existing_user["password"]):
 		print ("Login successful. Redirecting to products page")
-		session['username'] = str(existing_user['_id'])
+		session['user_id'] = str(existing_user['_id'])
+		session['account type'] = str(existing_user['account type'])
 		return redirect(url_for('index'))
 
 	else:
@@ -34,6 +35,7 @@ def signup():
 	user_info["name"] = request.form["name"]
 	user_info["email"] = request.form["email"]
 	user_info["password"] = request.form["password"]
+	user_info["account type"] = request.form["account type"]
 	
 	#import pdb;pdb.set_trace()
 	results =user_signup(user_info)
@@ -47,6 +49,10 @@ def signup():
 @app.route("/products")
 def product_page():
 	return render_template('products.html')
+
+@app.route("/Add_products")
+def Add_product_page():
+	return render_template('Add_products.html')
 
 @app.route('/logout')
 def logout():
