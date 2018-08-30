@@ -1,12 +1,34 @@
 <html>
 <head></head>
 <body>
-<ol>
-	<li>Smartphones</li>
-	<li>TV</li>
-	<li>Fashion</li>
-	<li>Appliances</li>
-	<li>Laptops</li>
-</ol>
+{% if session['account type']== "buyer" %}
+
+<form action="/searchproducts" method="POST">
+	<p>search <input type="text" name="search" placeholder="enter keywords here..."></p>		
+	<p><input type="submit" value="search"></p> <br>	
+
+</form>
+
+{% endif %}
+{% for dict in result %}
+<ul>
+	<li>name	:<b>{{dict["product name"] }}</li></b><br>
+	<li>price	:<b>{{dict["price"] }}</li></b><br>
+	<li>description:<b>{{dict["product description"] }}</li></b><br>
+	<li>Seller name:<b>{{dict["seller_username"] }}</li></b><br>
+	{% if session['account type']=="buyer" %}
+	<form action="/add_to_cart" method="POST">
+	<input name="product_id" type="hidden" value="{{dict['_id']}}">
+	<input type=submit value="Add to cart"> <br>
+	</form>
+	{% endif %}
+</ul>
+
+{% endfor %}
+{% if session['account type']=="buyer" %}
+<a href ="/cart_page">check your cart</a><br>
+{% endif %}
+
+<a href = "/logout">logout</a>
 </body>
 </html>
